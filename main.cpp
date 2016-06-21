@@ -196,6 +196,104 @@ int main()
 					cout << p.name << " has " << p.appearance << endl;
 			}
     }
-	
+    while(true){
+        clearScreen();
+        cout << "Very well. You have created your character. Display character info? (Y/N)" << endl;
+        std::string choice;
+        cin >> choice;
+        toUpperCase(choice);
+        if (choice == "Y") {
+            cout << "Name: " << p.name << endl;
+            switch (p.bg) {
+                case D_HUNTER:
+                    cout << "Dwarf, descendant of hunters" << endl;
+                    break;
+                case D_WARRIOR:
+                    cout << "Dwarf, descendant of warriors" << endl;
+                    break;
+                case H_PEASANT:
+                    cout << "Human peasant" << endl;
+                    break;
+                case H_NOBLE:
+                    cout << "Human noble" << endl;
+                    break;
+                default:
+                    break;
+            }
+            cout << p.appearance << endl;
+            break;
+        } else if (choice == "N") {
+            break;
+        } else {
+            cout << "Invalid choice" << endl;
+        }
+    }
+    cout << "Press enter to continue" << endl;
+    getchar();
+    clearScreen();
+    cout << "You wake up in a dark, unfamiliar room. A young lady is sitting in a chair near your bed." << endl;
+    cout << "You are hurt in the chest, yet, bandaged. The lady looks at you, apparently relieved by your awakening." << endl;
+    while(true) {
+        cout << "What will " << p.name << " do?" << endl;
+        cout << "TALK to girl" << endl;
+        cout << "ATTACK girl" << endl;
+        cout << "EXAMINE girl" << endl;
+        cout << "IGNORE girl" << endl;
+        std::string choice;
+        cin >> choice;
+        toUpperCase(choice);
+        if (choice == "TALK") {
+            cout << "GIRL: \"You are finally awake! I was worried it was too late for you...\"" << endl;
+            cout << "What will you say?" << endl;
+            cout << "1. Where am I?" << endl;
+            cout << "2. What happened to me?" << endl;
+            cout << "3. Why hello there! (FLIRT)" << endl;
+            int say;
+            cin >> say;
+            switch (say) {
+                case 1:
+                    cout << "GIRL: \"In my dungeon. Please do not fear, as I do not intend on causing you harm.\"" << endl;
+                    cout << "GIRL: \"I am Gibraltharis, the banished queen of the mountains of Skanathar.\"" << endl;
+                    cout << "Gibraltharis: \"I found you unconscious, struck by sinister magic, near my realms.\"" << endl;
+                    cout << "Gibraltharis: \"Usually I woudln't bother but... I feel a strong power on you...\"" << endl;
+                    break;
+                case 2:
+                    cout << "GIRL:\"You were struck by sinister magic, causing a wound that could not be healed by normal people\"" << endl;
+                    cout << "GIRL: \"I am Gibraltharis, the banished queen of the mountains of Skanathar.\"" << endl;
+                    cout << "Gibraltharis: \"I used my forbidden magic to heal your wounds.\"" << endl;
+                    cout << "Gibraltharis: \"I apologize for having to recur to such means, but I could not let you just die there.\"" << endl;
+                    cout << "Gibraltharis: \"Usually I woudln't bother but... I feel a strong power on you...\"" << endl;
+                    break;
+                case 3:
+                    cout << "GIRL:\"You are really straightforward, aren't you?" << endl;
+                    cout << "GIRL: \"I am Gibraltharis, the banished queen of the mountains of Skanathar.\"" << endl;
+                    cout << "Gibraltharis: \"I found you unconscious, struck by sinister magic, near my realms.\"" << endl;
+                    cout << "Gibraltharis: \"I used my forbidden magic to heal your wounds.\"" << endl;
+                    cout << "Gibraltharis: \"I apologize for having to recur to such means, but I could not let you just die there.\"" << endl;
+                    cout << "Gibraltharis: \"Usually I woudln't bother but... I feel a strong power on you...\"" << endl;
+                    break;
+                default:
+                    cout <<"GIRL: \"What?, cat got your tongue?\"" << endl;
+                    cout << "GIRL: \"I am Gibraltharis, the banished queen of the mountains of Skanathar.\"" << endl;
+                    cout << "Gibraltharis: \"I found you unconscious, struck by sinister magic, near my realms.\"" << endl;
+                    cout << "Gibraltharis: \"Usually I woudln't bother but... I feel a strong power on you...\"" << endl;
+                    break;
+            }
+            break;
+        } else if (choice == "ATTACK") {
+            cout << "Without any memories of how you ended up there, your instincts identify the girl as an enemy." << endl;
+            cout << "You quickly get up, jumping in the girl's direction with killing intent." << endl;
+            cout << "The girl looks at you with a bored look, as she simply\ntouches your chest and you EXPLODE INTO GORE..." << endl;
+            cout << "GAME OVER" << endl;
+            return 0;
+        } else if (choice == "EXAMINE") {
+            cout << "You see a silver-haired young elven girl. She has unusually pale skin, is wearing a completely black robe, and her eyes glow a sinister gray." << endl;
+            cout << "You can also sense a terribly powerful aura of magic that gives you a chill in the spine..." << endl;
+        } else if (choice == "IGNORE") {
+            cout << "The girl looks at you paciently. You shouldn't ignore her." << endl;
+        } else {
+            cout << "Invalid choice. " << endl;
+        }
+    }
         
 }
