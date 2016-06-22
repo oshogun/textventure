@@ -50,9 +50,11 @@ int main()
 	#ifdef __WIN32
 	cout << "Using Windows? Well, we support your crappy OS, but consider giving good old Unix a try ;-)" << endl;
 	cout << "TextVenture for Win32 PROTOTYPE" << endl;
+	system("COLOR C");
 	#elif __WIN64
 	cout << "Using Windows? Well, we support your crappy OS, but consider giving good old Unix a try ;-)" << endl;
 	cout << "TextVenture for Win64 PROTOTYPE" << endl;
+	system("COLOR B");
 	#elif __linux__
 	cout << "TextVenture for Linux PROTOTYPE" << endl;
 	#endif
@@ -79,13 +81,16 @@ int main()
     clearScreen();
 
     cout << "Greetings, adventurer. What is thy name?" << endl;
-    cin >> p.name;
+    cin.sync();
+	getline(cin, p.name);
+	
     cout << "Very well. Thy name is " << p.name << "." << endl;
 
     while (true) {
         cout << p.name << ", art thou a human? Or a dwarf?" << endl;
         std::string race;
-        cin >>  race;
+		cin.sync();
+        getline(cin,race);
         toUpperCase(race);
         if (race.compare("HUMAN") == 0) {
             p.race = HUMAN;
@@ -103,7 +108,8 @@ int main()
         std::string backg;
         while (true) {
             cout << "As a human, born in the mighty Empire of the Clouds,\nthe imposing country in the skies,is " << p.name << " a peasant?\nOr is he a nobleman?" << endl;
-            cin >> backg;
+            cin.sync();
+			getline(cin,backg);
             toUpperCase(backg);
             if (backg.compare("PEASANT") == 0) {
                 p.bg = H_PEASANT;
@@ -219,18 +225,21 @@ int main()
                     break;
                 default:
                     break;
+                    break;
             }
             cout << p.appearance << endl;
-            break;
+			getchar();
+			break;
         } else if (choice == "N") {
             break;
         } else {
             cout << "Invalid choice" << endl;
         }
+		 
     }
-    cout << "Press enter to continue" << endl;
-    getchar();
-    clearScreen();
+	cout << "Press enter to continue" << endl;
+	getchar();
+	clearScreen();
     cout << "You wake up in a dark, unfamiliar room. A young lady is sitting in a chair near your bed." << endl;
     cout << "You are hurt in the chest, yet, bandaged. The lady looks at you, apparently relieved by your awakening." << endl;
     while(true) {
