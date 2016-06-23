@@ -17,17 +17,6 @@ void Player::printInfo()
 
 }
 
-Player * Player::generateMito() {
- Player * mito = new Player();
- mito -> setName("Onii-chan pirocudo\n");
- mito -> setBackstory("Um onii-chan pica das galaxias\n");
- mito -> setAppearanceDescription("Ele é sugoi desu ne\n");
- auto talentos = std::vector<unsigned>(57,300);
- auto atributos = std::vector<unsigned>(7,100);
- mito -> setProficiencies(talentos);
- mito -> setStats(atributos);
- return mito;
-}
 std::string Player::listProficiencies() 
 {
     // here we fucking go
@@ -115,6 +104,5 @@ std::string Player::listStats()
 int main()
 {
     Player p;
-    Player * oniichan = p.generateMito();
-    oniichan->printInfo();
+    p.printInfo();
 }
