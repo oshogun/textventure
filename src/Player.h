@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <sstream>
 
 enum PROFICIENCIES {
     SWORDSMANSHIP, // Swords (one handed and two handed), katanas, scimitars, whatever
@@ -65,22 +66,45 @@ enum PROFICIENCIES {
 };
 
 enum STATS { // Temporarily ripping off D&D until I think of something better
-    STR,
-    CON,
-    DEX,
-    WIS,
-    CHA,
-    INT
+    STR, // Strength
+    CON, // Constitution
+    DEX, // Dexterity
+    WIS, // Wisdom
+    CHA, // Charisma
+    INT, // Intelligence
+    CSS // Common sense
 };
 class Player {
     
 public:
     Player();
-    void printStats();
+    void printInfo();
+    std::string getName() { return name; } 
+    void setName(std::string _name) { name = _name; }
+    unsigned int getLevel() { return level; }
+    void setLevel(int _level) { level = _level; }
+    std::vector<unsigned int>  getStats() { return stats; }
+    void setStats(std::vector<unsigned> _stats) { 
+        if ( _stats.size() == 7 ) stats = _stats;
+    }
+    std::string getBackstory() { return backstory; }
+    void setBackstory(std::string _backstory) { backstory = _backstory; }
+    std::string getAppearanceDescription() { return appearanceDescription; }
+    void setAppearanceDescription(std::string _appearance) { appearanceDescription = _appearance; }
+    std::vector<unsigned int> & getProficiencies() { return proficiencies; }
+    void setProficiencies(std::vector<unsigned> _proficiencies) { if (_proficiencies.size() == 57) proficiencies = _proficiencies; }
+    unsigned getGoldCoins() { return goldCoins; }
+    void setGoldCoins(unsigned _goldCoins) { goldCoins = _goldCoins; }
+    unsigned int getExperiencePoints() { return experiencePoints; }
+
+    /*****************************************************************************************************************************/
+    std::string listProficiencies();
+    std::string listStats();
+    
 private:
     std::string name;
     std::string backstory; // temporary, simple solution
-    std::string appearance_description; // temporary, simple solution
+    std::string appearanceDescription; // temporary, simple solution
     unsigned int level;
     unsigned int experiencePoints;
     unsigned long int goldCoins;
