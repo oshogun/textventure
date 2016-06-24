@@ -4,6 +4,9 @@
 #include <vector>
 #include <iostream>
 #include <sstream>
+#include <cmath>
+#include <map>
+#include <fstream>
 
 enum PROFICIENCIES {
     SWORDSMANSHIP, // Swords (one handed and two handed), katanas, scimitars, whatever
@@ -81,6 +84,7 @@ public:
     void printInfo();
     std::string getName() { return name; } 
     void setName(std::string _name) { name = _name; }
+	void generateExpTable();
     unsigned int getLevel() { return level; }
     void setLevel(int _level) { level = _level; }
     std::vector<unsigned int>  getStats() { return stats; }
@@ -96,11 +100,13 @@ public:
     unsigned getGoldCoins() { return goldCoins; }
     void setGoldCoins(unsigned _goldCoins) { goldCoins = _goldCoins; }
     unsigned int getExperiencePoints() { return experiencePoints; }
-
+	unsigned long long int calculateExpToLevel(unsigned int targetLevel);
+	void saveInfo();
     /*****************************************************************************************************************************/
     std::string listProficiencies();
     std::string listStats();
-    
+    std::map<unsigned, unsigned long long int> getExpTable() { return expTable; }
+	
 private:
     std::string name;
     std::string backstory; // temporary, simple solution
@@ -111,6 +117,7 @@ private:
     ///////////////////////////////////////////////////
     std::vector<unsigned int> proficiencies; 
     std::vector<unsigned int> stats;
-   
+	std::map<unsigned, unsigned long long int> expTable; // temporary solution until database is implemented
+    
    
 };

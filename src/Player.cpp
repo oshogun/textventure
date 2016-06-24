@@ -5,6 +5,7 @@ Player::Player(): level(1), experiencePoints(0), goldCoins(100), proficiencies(5
     name = "Test Dude";
     backstory = "This dude was created for testing purposes.\n";
     appearanceDescription = "He looks like a bunch of pixels\n";
+	generateExpTable();
 }
 
 void Player::printInfo() 
@@ -15,6 +16,19 @@ void Player::printInfo()
     std::cout << listProficiencies() << "\n" << listStats() << "\n";
     std::cout << "\n";
 
+}
+
+void Player::saveInfo() 
+{
+	std::ofstream file;
+	file.open("player_info.atm");
+    file << "Name: " << name << "\n" << "Backstory: " << backstory; 
+    file << "Appearance: " << appearanceDescription << "\nLevel: " << level << "\n";
+    file << "Experience: " << experiencePoints << "\n" << "Coins: " << goldCoins << "\n\n";
+    file << listProficiencies() << "\n" << listStats() << "\n";
+    file << "\n";
+	file.close();
+	
 }
 
 std::string Player::listProficiencies() 
@@ -80,7 +94,7 @@ std::string Player::listProficiencies()
         "Animal Handling:           "
     };
     #pragma unroll(3)
-    for (int i = 1; i < names.size() / 2; i++) {
+    for (int i = 1; i < names.size(); i++) {
         buffer << names[i - 1] << proficiencies[i- 1] << "\t";
         buffer << names[i] << proficiencies[i] << "\n";
     }
@@ -88,6 +102,20 @@ std::string Player::listProficiencies()
     return text;
 }
 
+unsigned long long int Player::calculateExpToLevel(unsigned int targetLevel) 
+{
+	if (targetLevel == 1)
+		return 100;
+	return (unsigned long long)((50 * pow(targetLevel, 2) - 5* targetLevel + 8) + calculateExpToLevel(targetLevel - 1));
+}
+
+void Player::generateExpTable()
+{
+	#pragma unroll(4)
+	for (auto i = 1u; i <= 8008; i++) {
+		expTable.insert(std::make_pair(i,calculateExpToLevel(i)));
+	}
+}
 std::string Player::listStats()
 {
     std::stringstream buffer;
@@ -104,5 +132,13 @@ std::string Player::listStats()
 int main()
 {
     Player p;
-    p.printInfo();
+    // p.printInfo();
+	p.saveInfo();
+	std::map<unsigned,unsigned long long> expTable = p.getExpTable();
+	std::ofstream file;
+	file.open("tabela_exp.txt");
+	for (auto it = expTable.cbegin(); it != expTable.cend(); ++it) {
+		file << it->first << " : " << it->second << "\n";
+	}
+	file.close();
 }
