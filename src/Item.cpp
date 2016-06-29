@@ -7,8 +7,9 @@ Item::Item(std::string name, unsigned ID, unsigned level, ITEM_RARITY rarity, bo
 // for test
 int main()
 {
-    //Inventory inv;
-    //inv.insertItem(p, EQUIPMENT);
-    //std:: cout << inv.hasItem(2112, EQUIPMENT) << "\n";
-    //std:: cout << inv.hasItem(90125, MISC) << "\n";  
+    Inventory inv;
+	std::unique_ptr<Item> item(new Item("Thunderfury",200,10,EPIC,false,true));
+    inv.insertItem(item, EQUIPMENT);	
+    std:: cout << inv.hasItem(200, EQUIPMENT) << "\n";
+    std:: cout << inv.hasItem(90125, MISC) << "\n";  
 }

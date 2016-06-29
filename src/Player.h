@@ -77,6 +77,11 @@ enum STATS { // Temporarily ripping off D&D until I think of something better
     INT, // Intelligence
     CSS // Common sense
 };
+
+enum GENDERS {
+	MALE,
+	FEMALE
+};
 class Player {
     
 public:
@@ -87,6 +92,8 @@ public:
 	void generateExpTable();
     unsigned int getLevel() { return level; }
     void setLevel(int _level) { level = _level; }
+	void setGender(GENDERS _gender) { gender = _gender; }
+	GENDERS getGender() { return gender; }
     std::vector<unsigned int>  getStats() { return stats; }
     void setStats(std::vector<unsigned> _stats) { 
         if ( _stats.size() == 7 ) stats = _stats;
@@ -114,6 +121,7 @@ private:
     unsigned int level;
     unsigned int experiencePoints;
     unsigned long int goldCoins;
+	GENDERS gender;
     ///////////////////////////////////////////////////
     std::vector<unsigned int> proficiencies; 
     std::vector<unsigned int> stats;
