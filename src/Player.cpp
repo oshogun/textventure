@@ -1,6 +1,11 @@
 #include "Player.h"
 
-Player::Player(): level(1), experiencePoints(0), goldCoins(100), proficiencies(57,5), stats(7,5)
+Player::Player(): level(1),
+    experiencePoints(0),
+    goldCoins(100),
+    proficiencies(57,5),
+    stats(7,5),
+    hitpoints(100)
 {
     name = "Test Dude";
     backstory = "This dude was created for testing purposes.\n";
@@ -12,6 +17,7 @@ void Player::printInfo()
 {
     std::cout << "Name: " << name << "\n" << "Backstory: " << backstory; 
     std::cout << "Appearance: " << appearanceDescription << "\nLevel: " << level << "\n";
+
     std::cout << "Experience: " << experiencePoints << "\n" << "Coins: " << goldCoins << "\n\n";
     std::cout << listProficiencies() << "\n" << listStats() << "\n";
     std::cout << "\n";
@@ -112,9 +118,24 @@ unsigned long long int Player::calculateExpToLevel(unsigned int targetLevel)
 void Player::generateExpTable()
 {
 	#pragma unroll(4)
-	for (auto i = 1u; i <= 8008; i++) {
+	for (auto i = 1u; i <= 1000; i++) {
 		expTable.insert(std::make_pair(i,calculateExpToLevel(i)));
 	}
+    sqlite3 * expTableDB;
+    sqlite3_open("exp_table.db", &expTableDB);
+    std::string sql = "CREATE TABLE exp_table(LEVEL INT PRIMARY KEY NOT NULL, EXP INT NOT NULL);";
+    sqlite3_exec(expTableDB, sql.c_str(),NULL, 0, NULL);
+    sqlite3_stmt *res;
+
+    sql = "INSERT INTO exp_table VALUES(?, ?);";
+    for (auto i: expTable) {
+        sqlite3_prepare_v2(expTableDB, sql.c_str(), -1, &res, 0);
+        sqlite3_bind_int(res, 1, i.first);
+        sqlite3_bind_int64(res, 2, i.second);
+        sqlite3_step(res);
+        sqlite3_finalize(res);
+    }
+    sqlite3_close(expTableDB);
 }
 std::string Player::listStats()
 {
@@ -128,17 +149,19 @@ std::string Player::listStats()
     return text;
 }
 
+void Player::receiveDamage(unsigned base_damage) {
+    int remaining_hp = hitpoints - base_damage;
+    if (remaining_hp < 0) hitpoints = 0;
+    else hitpoints = (unsigned) remaining_hp;
+}
+
+void Player::loadExpTable() {
+    sqlite3 * db;
+    sqlite3_open ("exp_table.db", &db);
+
+}
 //temporary for test
 int main()
 {
     Player p;
-    // p.printInfo();
-	p.saveInfo();
-	std::map<unsigned,unsigned long long> expTable = p.getExpTable();
-	std::ofstream file;
-	file.open("tabela_exp.txt");
-	for (auto it = expTable.cbegin(); it != expTable.cend(); ++it) {
-		file << it->first << " : " << it->second << "\n";
-	}
-	file.close();
 }

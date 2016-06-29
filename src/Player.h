@@ -7,6 +7,7 @@
 #include <cmath>
 #include <map>
 #include <fstream>
+#include <sqlite3.h>
 
 enum PROFICIENCIES {
     SWORDSMANSHIP, // Swords (one handed and two handed), katanas, scimitars, whatever
@@ -87,6 +88,8 @@ class Player {
 public:
     Player();
     void printInfo();
+    void loadExpTable();
+    void loadPlayerData();
     std::string getName() { return name; } 
     void setName(std::string _name) { name = _name; }
 	void generateExpTable();
@@ -113,6 +116,9 @@ public:
     std::string listProficiencies();
     std::string listStats();
     std::map<unsigned, unsigned long long int> getExpTable() { return expTable; }
+    ///////////////////////////////////////////////////////////////////////////////
+    void receiveDamage(unsigned base_damage);
+
 	
 private:
     std::string name;
@@ -120,12 +126,13 @@ private:
     std::string appearanceDescription; // temporary, simple solution
     unsigned int level;
     unsigned int experiencePoints;
+    unsigned int hitpoints;
+    unsigned int magicPoints;
     unsigned long int goldCoins;
 	GENDERS gender;
     ///////////////////////////////////////////////////
     std::vector<unsigned int> proficiencies; 
     std::vector<unsigned int> stats;
 	std::map<unsigned, unsigned long long int> expTable; // temporary solution until database is implemented
-    
-   
+       
 };
