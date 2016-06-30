@@ -89,6 +89,7 @@ public:
     Player();
     void printInfo();
     void loadExpTable();
+    void saveExpTable();
     void loadPlayerData();
     std::string getName() { return name; } 
     void setName(std::string _name) { name = _name; }
@@ -118,7 +119,9 @@ public:
     std::map<unsigned, unsigned long long int> getExpTable() { return expTable; }
     ///////////////////////////////////////////////////////////////////////////////
     void receiveDamage(unsigned base_damage);
-
+    void saveProficiencies();
+    void saveStats();
+    void createDatabases();
 	
 private:
     std::string name;
@@ -133,6 +136,6 @@ private:
     ///////////////////////////////////////////////////
     std::vector<unsigned int> proficiencies; 
     std::vector<unsigned int> stats;
-	std::map<unsigned, unsigned long long int> expTable; // temporary solution until database is implemented
-       
+    std::map<unsigned, unsigned long long> expTable; // turns out it's a better idea than sqlite
+    
 };

@@ -10,7 +10,6 @@ Player::Player(): level(1),
     name = "Test Dude";
     backstory = "This dude was created for testing purposes.\n";
     appearanceDescription = "He looks like a bunch of pixels\n";
-	generateExpTable();
 }
 
 void Player::printInfo() 
@@ -26,17 +25,46 @@ void Player::printInfo()
 
 void Player::saveInfo() 
 {
-	std::ofstream file;
-	file.open("player_info.atm");
-    file << "Name: " << name << "\n" << "Backstory: " << backstory; 
-    file << "Appearance: " << appearanceDescription << "\nLevel: " << level << "\n";
-    file << "Experience: " << experiencePoints << "\n" << "Coins: " << goldCoins << "\n\n";
-    file << listProficiencies() << "\n" << listStats() << "\n";
-    file << "\n";
-	file.close();
-	
+    saveProficiencies();
+    saveStats();
 }
 
+void Player::saveProficiencies()
+{
+    sqlite3 * db;
+    sqlite3_stmt * res;
+    sqlite3_open("player.db", &db);
+    for (auto i = 0; i < proficiencies.size(); i++) {
+        std::string sql = "INSERT INTO PROFICIENCIES VALUES (?,?);";
+        sqlite3_prepare_v2(db, sql.c_str(), -1, &res, 0);
+        sqlite3_bind_int(res, 1, i);
+        sqlite3_bind_int(res, 2, proficiencies[i]);
+        sqlite3_step(res);
+    }
+    sqlite3_finalize(res);
+    sqlite3_close(db);
+
+}
+
+void Player::saveStats()
+{
+    sqlite3 * db;
+    sqlite3_stmt * res;
+    sqlite3_open("player.db", &db);
+    std::string sql = "INSERT INTO PLAYER_STATS VALUES(?,?,?,?,?,?,?,?);";
+    sqlite3_prepare_v2(db, sql.c_str(), -1, &res, 0);
+    sqlite3_bind_text(res,1,name.c_str(),-1,0);
+    sqlite3_bind_int(res,2,level);
+    sqlite3_bind_int(res,3,experiencePoints);
+    sqlite3_bind_int(res,4,hitpoints);
+    sqlite3_bind_int(res,5,magicPoints);
+    sqlite3_bind_int64(res,6,goldCoins);
+    sqlite3_bind_text(res,7,backstory.c_str(),-1,0);
+    sqlite3_bind_text(res,8,appearanceDescription.c_str(),-1,0);
+    sqlite3_step(res);
+    sqlite3_finalize(res);
+    sqlite3_close(db);
+}
 std::string Player::listProficiencies() 
 {
     // here we fucking go
@@ -118,24 +146,9 @@ unsigned long long int Player::calculateExpToLevel(unsigned int targetLevel)
 void Player::generateExpTable()
 {
 	#pragma unroll(4)
-	for (auto i = 1u; i <= 1000; i++) {
-		expTable.insert(std::make_pair(i,calculateExpToLevel(i)));
-	}
-    sqlite3 * expTableDB;
-    sqlite3_open("exp_table.db", &expTableDB);
-    std::string sql = "CREATE TABLE exp_table(LEVEL INT PRIMARY KEY NOT NULL, EXP INT NOT NULL);";
-    sqlite3_exec(expTableDB, sql.c_str(),NULL, 0, NULL);
-    sqlite3_stmt *res;
-
-    sql = "INSERT INTO exp_table VALUES(?, ?);";
-    for (auto i: expTable) {
-        sqlite3_prepare_v2(expTableDB, sql.c_str(), -1, &res, 0);
-        sqlite3_bind_int(res, 1, i.first);
-        sqlite3_bind_int64(res, 2, i.second);
-        sqlite3_step(res);
-        sqlite3_finalize(res);
+	for (auto i = 1u; i <= 200; i++) {
+        expTable.insert(std::make_pair(i, calculateExpToLevel(i)));
     }
-    sqlite3_close(expTableDB);
 }
 std::string Player::listStats()
 {
@@ -155,13 +168,61 @@ void Player::receiveDamage(unsigned base_damage) {
     else hitpoints = (unsigned) remaining_hp;
 }
 
-void Player::loadExpTable() {
+void Player::saveExpTable()
+{
     sqlite3 * db;
-    sqlite3_open ("exp_table.db", &db);
+    sqlite3_stmt * res;
+    sqlite3_open("exp_table.db",&db);
+    std::string sql = "CREATE TABLE EXP_TABLE(LEVEL INT PRIMARY KEY, EXP UNSIGNED BIG INT);";
+    sqlite3_exec(db, sql.c_str(), NULL, NULL, NULL);
+    for (auto i: expTable) {
+        sql = "INSERT INTO EXP_TABLE VALUES(?,?);";
+        int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &res,0);
+        sqlite3_bind_int(res, 1, i.first);
+        sqlite3_bind_int64(res, 2, (sqlite_uint64) i.second);
+        int step = sqlite3_step(res);
+    }
+    sqlite3_finalize(res);
+    sqlite3_close(db);
+}
 
+void Player::loadExpTable()
+{
+    sqlite3 * db;
+    sqlite3_stmt * res;
+    std::cout << "lol" << std::endl;
+    sqlite3_open("exp_table.db", &db);
+    std::string sql = "SELECT * FROM EXP_TABLE";
+    sqlite3_prepare_v2(db, sql.c_str(), -1, &res, 0);
+    int step;
+    while(1) {
+        step = sqlite3_step(res);
+        if (step == SQLITE_ROW) {
+            expTable.insert(std::make_pair(sqlite3_column_int(res,0), sqlite3_column_int64(res,1)));
+        }
+        if (step == SQLITE_DONE) break;
+    }
+    sqlite3_finalize(res);
+    sqlite3_close(db);
+}
+
+void Player::createDatabases()
+{
+    //FIXME: Nao ta criando a PORRA do player_stats
+    sqlite3 * db;
+    sqlite3_open ("player.db", &db);
+    const char *sql = "CREATE TABLE PROFICIENCIES (ID INT PRIMARY KEY NOT NULL , VALUE INT NOT NULL);";
+    sqlite3_exec(db, sql, NULL,NULL,NULL);
+    sql = "CREATE TABLE PLAYER_STATS ( NAME VARCHAR(100) PRIMARY KEY NOT NULL, LEVEL UNSIGNED INT NOT NULL," \
+           "EXP UNSIGNED INT NOT NULL, HP UNSIGNED INT NOT NULL, MP UNSIGNED INT NOT NULL," \
+           "GOLD UNSIGNED BIG INT NOT NULL + BACKSTORY TEXT + APPEARANCE TEXT);";
+    sqlite3_exec(db, sql, NULL, NULL, NULL);
+    sqlite3_close(db);
 }
 //temporary for test
 int main()
 {
     Player p;
+    p.createDatabases();
+    p.saveInfo();
 }
